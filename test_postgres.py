@@ -1,6 +1,6 @@
 import os
+import pyodbc
 from dotenv import load_dotenv
-import psycopg2
 
 def test_postgres_connection():
     # Load environment variables from the .env file
@@ -16,13 +16,8 @@ def test_postgres_connection():
     conn = None
     try:
         # Establish a connection to the remote PostgreSQL database
-        conn = psycopg2.connect(
-            host=host,
-            port=port,
-            database=database,
-            user=user,
-            password=password
-        )
+        conn_str = f"Driver=PostgreSQL Unicode;Server={host};Port={port};Database={database};Uid={user};Pwd={password};"
+        conn = pyodbc.connect(conn_str)
 
         # Create a cursor object to execute SQL queries
         cursor = conn.cursor()
@@ -40,7 +35,7 @@ def test_postgres_connection():
         cursor.close()
         conn.close()
 
-    except (psycopg2.Error, Exception) as e:
+    except (pyodbc.Error, Exception) as e:
         print("Error connecting to PostgreSQL:", e)
 
 # Call the function to test the connection
